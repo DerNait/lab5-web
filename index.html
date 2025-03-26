@@ -3,34 +3,198 @@
   </head>
   <body>
     <script type="application/javascript">
-        document.body.style.backgroundColor = "#dae4f5";
+        document.body.style.backgroundColor = "#FFFFFF";
+        document.body.style.fontFamily = "Tahoma, sans-serif";
+        document.body.style.display = "flex";
+        document.body.style.alignItems = "center";
+        document.body.style.justifyContent = "center";
 
-        //Fondo del register box
-        const userRegisterBox = document.createElement("div");
-        userRegisterBox.style.width = "800px";
-        userRegisterBox.style.height = "800px";
-        userRegisterBox.style.backgroundColor = "#919eb3";
-        userRegisterBox.style.color = "white";
-        userRegisterBox.style.display = "flex";
-        userRegisterBox.style.alignItems = "top";
-        userRegisterBox.style.justifyContent = "center";
-        userRegisterBox.style.borderRadius = "10px";
-        userRegisterBox.style.margin = "20px auto";
+        if (!localStorage.getItem("logged_username")) {
+          buildUserRegisterBox();
+        }
+        else {
+          getMessages();
+          buildChatContainer();
+          console.log("Usuario ya registrado!");
+        }
 
-        document.body.appendChild(userRegisterBox);
-        
-        const userRegisterBoxTitle = document.createElement("h1");
-        userRegisterBoxTitle.textContent = "Ingresa tu nombre"
-        userRegisterBoxTitle.style.margin = "10px auto";
-        userRegisterBoxTitle.style.fontSize = "48px"
-        userRegisterBoxTitle.style.color = "black"
-        
-        userRegisterBox.appendChild(userRegisterBoxTitle);
+        function buildChatContainer() {
+          //Contenedor
+          const chatContainer = document.createElement("div");
+          chatContainer.style.width = "65%";
+          chatContainer.style.height = "100%";
+          chatContainer.style.backgroundColor = "#f0f0f0";
+          chatContainer.style.boxShadow = "2px 2px 5px #d1d1d1";;
+          chatContainer.style.borderRadius = "15px";
+          chatContainer.style.display = "flex";
+          chatContainer.style.flexDirection = "column";
 
-        //getMessages();
+          document.body.appendChild(chatContainer);
+
+          //Header
+          const chatHeader = document.createElement("div");
+          chatHeader.style.width = "100%";
+          chatHeader.style.height = "3.5em";
+          chatHeader.style.backgroundColor = "#2b79ff";
+          chatHeader.style.borderTopLeftRadius = "15px";
+          chatHeader.style.borderTopRightRadius = "15px";
+          chatHeader.style.display = "flex";
+          chatHeader.style.alignContent = "center";
+          chatHeader.style.justifyContent = "center";
+
+          chatContainer.appendChild(chatHeader);
+
+          //Titulo del chat
+          const chatTitle = document.createElement("h3");
+          chatTitle.style.color = "#ffffff";
+          chatTitle.style.fontWeight = "200";
+
+          chatTitle.textContent = "nrywhite.lat chat";
+
+          chatHeader.appendChild(chatTitle);
+
+          //Container de los mensajes del chat
+          const chatMessagesContainer = document.createElement("div");
+          chatMessagesContainer.style.width = "100%";
+          chatMessagesContainer.style.height = "100%";
+          chatMessagesContainer.style.flex = "1";
+          chatMessagesContainer.style.overflowY = "auto";
+
+          chatContainer.appendChild(chatMessagesContainer);
+
+          //Enviador de mensajes
+          const chatSenderContainer = document.createElement ("div");
+          chatSenderContainer.style.height = "4em";
+          chatSenderContainer.style.width = "100%";
+          chatSenderContainer.style.backgroundColor = "white";
+          chatSenderContainer.style.borderBottomLeftRadius = "15px";
+          chatSenderContainer.style.borderBottomRightRadius = "15px";
+          chatSenderContainer.style.display = "flex";
+          chatSenderContainer.style.alignItems = "center";
+          chatSenderContainer.style.justifyContent = "center";
+
+          chatContainer.appendChild(chatSenderContainer);
+
+          //Input para los mensajes
+          const chatSenderInput = document.createElement("input");
+          chatSenderInput.style.height = "3em";
+          chatSenderInput.style.width = "70%";
+          chatSenderInput.style.borderRadius = "5px";
+          chatSenderInput.style.border = "1px solid gray";
+
+          chatSenderContainer.appendChild(chatSenderInput);
+
+          //Boton para enviar mensaje
+          const chatSenderButton = document.createElement("button");
+          chatSenderButton.style.height = "3em";
+          chatSenderButton.style.width = "20%";
+          chatSenderButton.style.marginLeft = "1em";
+          chatSenderButton.style.borderRadius = "5px";
+          chatSenderButton.style.border = "1px solid #2b79ff";
+          chatSenderButton.style.backgroundColor = "#2b79ff";
+          chatSenderButton.style.color = "white";
+
+          chatSenderButton.textContent = "Enviar mensaje";
+
+          chatSenderContainer.appendChild(chatSenderButton);
+        }
+
+        function buildUserRegisterBox() {
+          //Fondo del register box
+          const userRegisterBox = document.createElement("div");
+          userRegisterBox.style.width = "500px";
+          userRegisterBox.style.height = "300px";
+          userRegisterBox.style.backgroundColor = "#f0f0f0";
+          userRegisterBox.style.boxShadow = "2px 2px 5px #d1d1d1";
+          userRegisterBox.style.color = "white";
+          userRegisterBox.style.display = "flex";
+          userRegisterBox.style.flexDirection = "column";
+          userRegisterBox.style.alignItems = "top";
+          userRegisterBox.style.justifyContent = "top";
+          userRegisterBox.style.borderRadius = "10px";
+          userRegisterBox.style.margin = "20px auto";
+  
+          document.body.appendChild(userRegisterBox);
+          
+          //Titulo del register box
+          const userRegisterBoxTitle = document.createElement("h1");
+          userRegisterBoxTitle.textContent = "Ingresa tu nombre"
+          userRegisterBoxTitle.style.margin = "10px auto";
+          userRegisterBoxTitle.style.fontSize = "30px"
+          userRegisterBoxTitle.style.color = "#242424"
+          
+          userRegisterBox.appendChild(userRegisterBoxTitle);
+  
+          //Break linea que separe el titulo de lo demas
+          const userRegisterBoxBreakLine = document.createElement("hr");
+          userRegisterBoxBreakLine.style.backgroundColor = "#cccccc";
+          userRegisterBoxBreakLine.style.height = ".1em";
+  
+          userRegisterBox.appendChild(userRegisterBoxBreakLine);
+  
+          //Container de todo lo demas
+          const userRegisterBoxContainer = document.createElement("div");
+          userRegisterBoxContainer.style.height = "100%";
+          userRegisterBoxContainer.style.margin = "0 5em";
+          userRegisterBoxContainer.style.display = "flex";
+          userRegisterBoxContainer.style.flexDirection = "column";
+          userRegisterBoxContainer.style.alignItems = "center";
+          userRegisterBoxContainer.style.justifyContent = "center";
+  
+          userRegisterBox.appendChild(userRegisterBoxContainer);
+  
+          //Input para el texto
+          const userRegisterInput = document.createElement("input");
+          userRegisterInput.style.margin = ".5em";
+          userRegisterInput.style.height = "2.5em";
+          userRegisterInput.style.width = "100%";
+          userRegisterInput.style.border = "none";
+          userRegisterInput.style.fontFamily = "Tahoma, sans-serif";
+          userRegisterInput.style.borderRadius = "5px";
+          userRegisterInput.style.fontSize = "18px";
+          
+          userRegisterInput.id = "username";
+          userRegisterInput.placeholder = "Ingresa tu nombre..."; 
+  
+          userRegisterBoxContainer.appendChild(userRegisterInput);
+  
+          //Boton para guardar el nombre
+          const userRegisterButton = document.createElement("button");
+          userRegisterButton.style.height = "2.5em";
+          userRegisterButton.style.width = "100%";
+          userRegisterButton.style.margin = ".5em";
+          userRegisterButton.style.border = "none";
+          userRegisterButton.style.borderRadius = "5px";
+          userRegisterButton.style.fontSize = "18px";
+          userRegisterButton.style.fontFamily = "Tahoma, sans-serif";
+          userRegisterButton.style.color = "#FFFFFF";
+          userRegisterButton.style.backgroundColor = "#2b79ff";
+          userRegisterButton.textContent = "Comenzar a chatear";
+
+          userRegisterButton.id = "register";
+          userRegisterButton.addEventListener('click', () => {
+            registerUser();
+          });
+
+          userRegisterBoxContainer.appendChild(userRegisterButton);
+        }
+
+        function registerUser() {
+          console.log("Registrando usuario...");
+
+          const username = document.getElementById("username").value;
+
+          if (!username) {
+              console.log("No hay nombre de usuario ingresado");
+              //document.getElementById("message").innerHTML = "Usuario o clave inválida";
+          } else {
+              localStorage.setItem("logged_username", username);
+              window.location.href = "/";
+              79
+          }
+        }
 
         async function getMessages() {
-            
             let res = await fetch('https://chat.nrywhite.lat/chats');
             console.log(res);
 
