@@ -1,0 +1,44 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <script type="application/javascript">
+        document.body.style.backgroundColor = "#dae4f5";
+
+        //Fondo del register box
+        const userRegisterBox = document.createElement("div");
+        userRegisterBox.style.width = "800px";
+        userRegisterBox.style.height = "800px";
+        userRegisterBox.style.backgroundColor = "#919eb3";
+        userRegisterBox.style.color = "white";
+        userRegisterBox.style.display = "flex";
+        userRegisterBox.style.alignItems = "top";
+        userRegisterBox.style.justifyContent = "center";
+        userRegisterBox.style.borderRadius = "10px";
+        userRegisterBox.style.margin = "20px auto";
+
+        document.body.appendChild(userRegisterBox);
+        
+        const userRegisterBoxTitle = document.createElement("h1");
+        userRegisterBoxTitle.textContent = "Ingresa tu nombre"
+        userRegisterBoxTitle.style.margin = "10px auto";
+        userRegisterBoxTitle.style.fontSize = "48px"
+        userRegisterBoxTitle.style.color = "black"
+        
+        userRegisterBox.appendChild(userRegisterBoxTitle);
+
+        //getMessages();
+
+        async function getMessages() {
+            
+            let res = await fetch('https://chat.nrywhite.lat/chats');
+            console.log(res);
+
+            let datos = await res.json();
+
+            console.log(datos);
+        }
+
+    </script>
+  </body>
+</html>
