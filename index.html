@@ -4,21 +4,102 @@
   <body>
     <script type="application/javascript">
         const backend_url = "https://chat.nrywhite.lat/chats";
+        let theme = localStorage.getItem("theme");
 
-        document.body.style.backgroundColor = "#FFFFFF";
-        document.body.style.fontFamily = "Tahoma, sans-serif";
-        document.body.style.display = "flex";
-        document.body.style.alignItems = "center";
-        document.body.style.justifyContent = "center";
+        console.log("El theme es: " + theme);
 
-        if (!localStorage.getItem("logged_username")) {
-          buildUserRegisterBox();
+        if (!theme) {
+          localStorage.setItem("theme", "Claro");
+          theme = "Claro";
         }
-        else {
-          getMessages();
-          buildChatContainer();
-          buildMessage("Kevin", "Probando");
-          console.log("Usuario ya registrado!");
+
+        let backgroundColor = (theme === "Claro") ? "#FFFFFF" : "#1f1f1f";
+        let containerColor = (theme === "Claro") ? "#f0f0f0" : "#0e0e0e";
+        let primaryColor = (theme === "Claro") ? "#2b79ff" : "#fa7e25";
+        let secondaryColor = (theme === "Claro") ? "#7eadfc" : "#fa9b57";
+        let textColor = (theme === "Claro") ? "#000000" : "#ffffff";
+        let shadowColor = (theme === "Claro") ? "#d1d1d1" : "#060606";
+        let inputBorderColor = (theme === "Claro") ? "gray" : "#aeaeae";
+        let inputBackgroundColor = (theme === "Claro") ? "white" : "#393939";
+
+        start();
+
+        function start() {
+          document.body.style.backgroundColor = backgroundColor;
+          document.body.style.fontFamily = "Tahoma, sans-serif";
+          document.body.style.display = "flex";
+          document.body.style.position = "relative";
+          document.body.style.justifyContent = "center";
+  
+          if (!localStorage.getItem("logged_username")) {
+            buildUserRegisterBox();
+          }
+          else {
+            getMessages();
+            buildChatContainer();
+            buildMessage("DerNait", "ProbandooooooooooooooooooooooooProbandooooooooooooooooooooooooProbandoooooooooooooooooooooooo");
+            buildMessage("Kevin", "ProbandooooooooooooooooooooooooProbandooooooooooooooooooooooooProbandoooooooooooooooooooooooo");
+            console.log("Usuario ya registrado!");
+          }
+  
+          buildToggleTheme();
+        }
+
+
+        function buildToggleTheme() {
+          //Contenedor de todos los elementos del toggle
+          const toggleContainer = document.createElement("div");
+          toggleContainer.style.width = "200px";
+          toggleContainer.style.height = "70px";
+          toggleContainer.style.backgroundColor = containerColor;
+          toggleContainer.style.position = "absolute";
+          toggleContainer.style.right = "0";
+          toggleContainer.style.borderRadius = "10px";
+          toggleContainer.style.boxShadow = "2px 2px 5px " + shadowColor;
+          toggleContainer.style.display = "flex";
+          toggleContainer.style.flexDirection = "column";
+
+          document.body.appendChild(toggleContainer);
+
+          //Header del toggle
+          const toggleHeader = document.createElement("div");
+          toggleHeader.style.width = "100%";
+          toggleHeader.style.height = "2em";
+          toggleHeader.style.backgroundColor = primaryColor;
+          toggleHeader.style.borderTopLeftRadius = "10px";
+          toggleHeader.style.borderTopRightRadius = "10px";
+          toggleHeader.style.display = "flex";
+          toggleHeader.style.justifyContent = "center";
+          toggleHeader.style.alignItems = "center";
+
+          toggleContainer.appendChild(toggleHeader);
+
+          //Titulo del header
+          const toggleTitle = document.createElement("p");
+          toggleTitle.style.color = "white";
+          toggleTitle.style.fontFamily = "Tahoma, sans-serif";
+
+          toggleTitle.textContent = "Modo: " + theme;
+          
+          toggleHeader.appendChild(toggleTitle);
+
+          //Boton para cambiar
+          const toggleButton = document.createElement("button");
+          toggleButton.style.color = textColor;
+          toggleButton.style.margin = "auto";
+          toggleButton.style.width = "100%";
+          toggleButton.style.backgroundColor = "transparent";
+          toggleButton.style.border = "transparent";
+          toggleButton.style.fontFamily = "Tahoma, sans-serif";
+
+          toggleButton.textContent = "Cambiar";
+
+          toggleButton.addEventListener('click', () => {
+            toggleTheme();
+          });
+
+          toggleContainer.appendChild(toggleButton);
+
         }
 
         function buildMessage(username, message) {
@@ -28,35 +109,69 @@
           const messageContainer = document.createElement("div");
           messageContainer.style.display = "flex";
           messageContainer.style.alignItems = "end";
-          messageContainer.style.justifyContent = "bottom";
+          if (username === localStorage.getItem("logged_username")) {
+            messageContainer.style.justifyContent = "end";
+          }
+          else {
+            messageContainer.style.justifyContent = "start";
+          }
           messageContainer.style.margin = "1em";
 
           chatMessagesContainer.appendChild(messageContainer);
           
           //Icono del mensaje
           const icon = document.createElement("div");
-          icon.style.backgroundColor = "black";
+
+          if (username === localStorage.getItem("logged_username")) {
+            icon.style.backgroundColor = secondaryColor;
+          }
+          else {
+            icon.style.backgroundColor = "#8f8f8f";
+          }
+
           icon.style.borderRadius = "100%";
           icon.style.width = "50px";
           icon.style.height = "50px";
-
-          messageContainer.appendChild(icon);
+          
+          if (username !== localStorage.getItem("logged_username")) {
+            messageContainer.appendChild(icon);
+          }
 
           //Burbuja de mensaje
           const messageBubble = document.createElement("div");
+          if (username === localStorage.getItem("logged_username")) {
+            messageBubble.style.backgroundColor = secondaryColor;
+          }
+          else {
+            messageBubble.style.backgroundColor = backgroundColor;
+          }
           messageBubble.style.width = "50%";
           messageBubble.style.minHeight = "2em";
-          messageBubble.style.backgroundColor = "white";
           messageBubble.style.borderRadius = "5px";
           messageBubble.style.display = "flex";
           messageBubble.style.flexDirection = "column";
           messageBubble.style.padding = "none";
           messageBubble.style.marginLeft = ".3em";
+          messageBubble.style.marginRight = ".3em";
+          messageBubble.style.wordWrap = "break-word";
+          messageBubble.style.overflowWrap = "break-word";
+          messageBubble.style.whiteSpace = "normal";
 
           messageContainer.appendChild(messageBubble);
 
+          if (username === localStorage.getItem("logged_username")) {
+            messageContainer.appendChild(icon);
+          }
+
           //Nombre del usuario
           const usernameText = document.createElement("h3");
+          if (username === localStorage.getItem("logged_username")) {
+            usernameText.style.color = "white";
+          }
+          else {
+            usernameText.style.color = primaryColor;
+          }
+
           usernameText.style.margin = "5px";
 
           usernameText.textContent = username;
@@ -65,6 +180,13 @@
 
           //Mensaje del usuario
           const messageText = document.createElement("p");
+          if (username === localStorage.getItem("logged_username")) {
+            messageText.style.color = "white";
+          }
+          else {
+            messageText.style.color = textColor;
+          }
+
           messageText.style.margin = "5px";
 
           messageText.textContent = message;
@@ -78,8 +200,8 @@
           const chatContainer = document.createElement("div");
           chatContainer.style.width = "65%";
           chatContainer.style.height = "100%";
-          chatContainer.style.backgroundColor = "#f0f0f0";
-          chatContainer.style.boxShadow = "2px 2px 5px #d1d1d1";;
+          chatContainer.style.backgroundColor = containerColor;
+          chatContainer.style.boxShadow = "2px 2px 5px " + shadowColor;
           chatContainer.style.borderRadius = "15px";
           chatContainer.style.display = "flex";
           chatContainer.style.flexDirection = "column";
@@ -90,7 +212,7 @@
           const chatHeader = document.createElement("div");
           chatHeader.style.width = "100%";
           chatHeader.style.height = "3.5em";
-          chatHeader.style.backgroundColor = "#2b79ff";
+          chatHeader.style.backgroundColor = primaryColor;
           chatHeader.style.borderTopLeftRadius = "15px";
           chatHeader.style.borderTopRightRadius = "15px";
           chatHeader.style.display = "flex";
@@ -124,7 +246,7 @@
           const chatSenderContainer = document.createElement ("div");
           chatSenderContainer.style.height = "4em";
           chatSenderContainer.style.width = "100%";
-          chatSenderContainer.style.backgroundColor = "white";
+          chatSenderContainer.style.backgroundColor = backgroundColor;
           chatSenderContainer.style.borderBottomLeftRadius = "15px";
           chatSenderContainer.style.borderBottomRightRadius = "15px";
           chatSenderContainer.style.display = "flex";
@@ -138,7 +260,9 @@
           chatSenderInput.style.height = "3em";
           chatSenderInput.style.width = "70%";
           chatSenderInput.style.borderRadius = "5px";
-          chatSenderInput.style.border = "1px solid gray";
+          chatSenderInput.style.backgroundColor = inputBackgroundColor;
+          chatSenderInput.style.border = "1px solid " + inputBorderColor;
+          chatSenderInput.style.color = textColor;
           chatSenderInput.style.fontFamily = "Tahoma, sans-serif";
           
           chatSenderInput.id = "messageInput";
@@ -153,8 +277,8 @@
           chatSenderButton.style.width = "20%";
           chatSenderButton.style.marginLeft = "1em";
           chatSenderButton.style.borderRadius = "5px";
-          chatSenderButton.style.border = "1px solid #2b79ff";
-          chatSenderButton.style.backgroundColor = "#2b79ff";
+          chatSenderButton.style.border = "1px solid " + primaryColor;
+          chatSenderButton.style.backgroundColor = primaryColor;
           chatSenderButton.style.color = "white";
           chatSenderButton.style.fontFamily = "Tahoma, sans-serif";
 
@@ -172,8 +296,8 @@
           const userRegisterBox = document.createElement("div");
           userRegisterBox.style.width = "500px";
           userRegisterBox.style.height = "300px";
-          userRegisterBox.style.backgroundColor = "#f0f0f0";
-          userRegisterBox.style.boxShadow = "2px 2px 5px #d1d1d1";
+          userRegisterBox.style.backgroundColor = containerColor;
+          userRegisterBox.style.boxShadow = "2px 2px 5px " + shadowColor;
           userRegisterBox.style.color = "white";
           userRegisterBox.style.display = "flex";
           userRegisterBox.style.flexDirection = "column";
@@ -183,22 +307,28 @@
           userRegisterBox.style.margin = "20px auto";
   
           document.body.appendChild(userRegisterBox);
+
+          //Header del register box
+          const userRegisterBoxHeader = document.createElement("div");
+          userRegisterBoxHeader.style.height = "5em";
+          userRegisterBoxHeader.style.width = "100%";
+          userRegisterBoxHeader.style.borderTopLeftRadius = "10px";
+          userRegisterBoxHeader.style.borderTopRightRadius = "10px";
+          userRegisterBoxHeader.style.backgroundColor = primaryColor;
+          userRegisterBoxHeader.style.display = "flex";
+          userRegisterBoxHeader.style.alignItems = "center";
+
+          userRegisterBox.append(userRegisterBoxHeader);
           
           //Titulo del register box
           const userRegisterBoxTitle = document.createElement("h1");
-          userRegisterBoxTitle.textContent = "Ingresa tu nombre"
+          userRegisterBoxTitle.textContent = "Ingresa tu nombre";
           userRegisterBoxTitle.style.margin = "10px auto";
-          userRegisterBoxTitle.style.fontSize = "30px"
-          userRegisterBoxTitle.style.color = "#242424"
+          userRegisterBoxTitle.style.fontSize = "24px";
+          userRegisterBoxTitle.style.fontWeight = "200";
+          userRegisterBoxTitle.style.color = "white";
           
-          userRegisterBox.appendChild(userRegisterBoxTitle);
-  
-          //Break linea que separe el titulo de lo demas
-          const userRegisterBoxBreakLine = document.createElement("hr");
-          userRegisterBoxBreakLine.style.backgroundColor = "#cccccc";
-          userRegisterBoxBreakLine.style.height = ".1em";
-  
-          userRegisterBox.appendChild(userRegisterBoxBreakLine);
+          userRegisterBoxHeader.appendChild(userRegisterBoxTitle);
   
           //Container de todo lo demas
           const userRegisterBoxContainer = document.createElement("div");
@@ -219,7 +349,10 @@
           userRegisterInput.style.border = "none";
           userRegisterInput.style.fontFamily = "Tahoma, sans-serif";
           userRegisterInput.style.borderRadius = "5px";
+          userRegisterInput.style.border = "1px solid " + inputBorderColor;
           userRegisterInput.style.fontSize = "18px";
+          userRegisterInput.style.backgroundColor = inputBackgroundColor;
+          userRegisterInput.style.color = textColor;
           
           userRegisterInput.id = "username";
           userRegisterInput.placeholder = "Ingresa tu nombre..."; 
@@ -236,7 +369,7 @@
           userRegisterButton.style.fontSize = "18px";
           userRegisterButton.style.fontFamily = "Tahoma, sans-serif";
           userRegisterButton.style.color = "#FFFFFF";
-          userRegisterButton.style.backgroundColor = "#2b79ff";
+          userRegisterButton.style.backgroundColor = primaryColor;
           userRegisterButton.textContent = "Comenzar a chatear";
 
           userRegisterButton.id = "register";
@@ -257,8 +390,7 @@
               //document.getElementById("message").innerHTML = "Usuario o clave inválida";
           } else {
               localStorage.setItem("logged_username", username);
-              window.location.href = "/";
-              79
+              window.location.reload();
           }
         }
 
@@ -299,6 +431,36 @@
                     //ocument.getElementById("message").innerHTML = "Se dio un error al ingresar";
                 }
             });
+        }
+
+        function toggleTheme() {
+          console.log("Toggling theme...");
+
+          if (localStorage.getItem("theme") === "Claro") {
+            theme = "Oscuro";
+            localStorage.setItem("theme", theme);
+          }
+          else {
+            theme = "Claro";
+            localStorage.setItem("theme", theme);
+          }
+
+          initTheme();
+        }
+
+        function initTheme(){
+          backgroundColor = (theme === "Claro") ? "#FFFFFF" : "#1f1f1f";
+          containerColor = (theme === "Claro") ? "#f0f0f0" : "#0e0e0e";
+          primaryColor = (theme === "Claro") ? "#2b79ff" : "#fa7e25";
+          secondaryColor = (theme === "Claro") ? "#7eadfc" : "#fa9b57";
+          textColor = (theme === "Claro") ? "#000000" : "#ffffff";
+          shadowColor = (theme === "Claro") ? "#d1d1d1" : "#060606";
+          inputBorderColor = (theme === "Claro") ? "gray" : "#aeaeae";
+          inputBackgroundColor = (theme === "Claro") ? "white" : "#393939";
+
+          document.body.innerHTML = '';
+
+          start();
         }
 
     </script>
