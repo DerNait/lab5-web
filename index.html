@@ -13,6 +13,8 @@
           theme = "Claro";
         }
 
+        const tertiaryColor = "#ff3838"
+
         let backgroundColor = (theme === "Claro") ? "#FFFFFF" : "#1f1f1f";
         let containerColor = (theme === "Claro") ? "#f0f0f0" : "#0e0e0e";
         let primaryColor = (theme === "Claro") ? "#2b79ff" : "#fa7e25";
@@ -25,6 +27,29 @@
         start();
 
         function start() {
+          const style = document.createElement('style');
+          style.innerHTML = `
+            #messageContainer::-webkit-scrollbar {
+              background: ${inputBackgroundColor};
+              width: 8px;
+            }
+
+            #messageContainer::-webkit-scrollbar-thumb {
+              background: ${inputBackgroundColor};
+              border-radius: 8px;
+            }
+
+            #messageContainer::-webkit-scrollbar-track {
+              background: ${inputBackgroundColor};
+            }
+
+            #messageContainer {
+              scrollbar-width: thin;
+              scrollbar-color: ${secondaryColor} ${inputBackgroundColor};
+            }
+          `;
+          document.head.appendChild(style);
+
           document.body.style.backgroundColor = backgroundColor;
           document.body.style.fontFamily = "Tahoma, sans-serif";
           document.body.style.display = "flex";
@@ -39,6 +64,12 @@
             buildChatContainer();
             buildMessage("DerNait", "ProbandooooooooooooooooooooooooProbandooooooooooooooooooooooooProbandoooooooooooooooooooooooo");
             buildMessage("Kevin", "ProbandooooooooooooooooooooooooProbandooooooooooooooooooooooooProbandoooooooooooooooooooooooo");
+            buildMessage("Kevin", "Mirá esta imagen: https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png");
+
+            buildMessage("DerNait", "Video buenísimo: https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+
+            buildMessage("Kevin", "También funciona con el link corto: https://youtu.be/dQw4w9WgXcQ");
+
             console.log("Usuario ya registrado!");
           }
   
@@ -145,7 +176,7 @@
           else {
             messageBubble.style.backgroundColor = backgroundColor;
           }
-          messageBubble.style.width = "50%";
+          messageBubble.style.maxWidth = "50%";
           messageBubble.style.minHeight = "2em";
           messageBubble.style.borderRadius = "5px";
           messageBubble.style.display = "flex";
@@ -189,10 +220,11 @@
 
           messageText.style.margin = "5px";
 
-          messageText.textContent = message;
+          messageText.innerHTML = detectContent(message);
 
           messageBubble.appendChild(messageText);
 
+          chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
         }
 
         function buildChatContainer() {
@@ -205,9 +237,8 @@
           chatContainer.style.borderRadius = "15px";
           chatContainer.style.display = "flex";
           chatContainer.style.flexDirection = "column";
-
+                    
           document.body.appendChild(chatContainer);
-
           //Header
           const chatHeader = document.createElement("div");
           chatHeader.style.width = "100%";
@@ -226,6 +257,7 @@
           chatTitle.style.color = "#ffffff";
           chatTitle.style.fontWeight = "100";
           chatTitle.style.fontFamily = "Tahoma, sans-serif";
+          chatTitle.style.fontSize = "18px";
 
           chatTitle.textContent = "nrywhite.lat chat";
 
@@ -242,18 +274,51 @@
 
           chatContainer.appendChild(chatMessagesContainer);
 
+          chatMessagesContainer.scrollTop = chatContainer.scrollHeight;
+
           //Enviador de mensajes
-          const chatSenderContainer = document.createElement ("div");
-          chatSenderContainer.style.height = "4em";
+          const chatSender = document.createElement("div");
+          chatSender.style.height = "6em";
+          chatSender.style.width = "100%";
+          chatSender.style.backgroundColor = backgroundColor;
+          chatSender.style.borderBottomLeftRadius = "15px";
+          chatSender.style.borderBottomRightRadius = "15px";
+          chatSender.style.display = "flex";
+          chatSender.style.flexDirection = "column";
+          chatSender.style.alignItems = "center";
+          chatSender.style.justifyContent = "center";
+
+          chatContainer.appendChild(chatSender);
+
+          //Contenedor dentro del enviador
+          const chatSenderContainer = document.createElement("div");
           chatSenderContainer.style.width = "100%";
-          chatSenderContainer.style.backgroundColor = backgroundColor;
-          chatSenderContainer.style.borderBottomLeftRadius = "15px";
-          chatSenderContainer.style.borderBottomRightRadius = "15px";
+          chatSenderContainer.style.height = "100%";
           chatSenderContainer.style.display = "flex";
           chatSenderContainer.style.alignItems = "center";
           chatSenderContainer.style.justifyContent = "center";
 
-          chatContainer.appendChild(chatSenderContainer);
+          chatSender.appendChild(chatSenderContainer);
+
+          //Cerrar sesion
+          const chatLogOut = document.createElement("button");
+          chatLogOut.style.height = "3em";
+          chatLogOut.style.width = "10%";
+          chatLogOut.style.marginRight = "1em";
+          chatLogOut.style.borderRadius = "5px";
+          chatLogOut.style.border = "1px solid " + tertiaryColor;
+          chatLogOut.style.backgroundColor = tertiaryColor;
+          chatLogOut.style.color = "white";
+          chatLogOut.style.fontFamily = "Tahoma, sans-serif";
+          chatLogOut.style.fontSize = "14px";
+
+          chatLogOut.addEventListener('click', () => {
+            logOut();
+          });
+
+          chatLogOut.textContent = "Cerrar sesión";
+
+          chatSenderContainer.appendChild(chatLogOut);
 
           //Input para los mensajes
           const chatSenderInput = document.createElement("input");
@@ -264,23 +329,34 @@
           chatSenderInput.style.border = "1px solid " + inputBorderColor;
           chatSenderInput.style.color = textColor;
           chatSenderInput.style.fontFamily = "Tahoma, sans-serif";
+          chatSenderInput.style.fontSize = "14px";
           
           chatSenderInput.id = "messageInput";
+          chatSenderInput.maxLength = "140";
 
           chatSenderInput.placeholder = "Ingrese su mensaje...";
+
+          chatSenderInput.addEventListener('keydown', function (event) {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+              }
+          })
 
           chatSenderContainer.appendChild(chatSenderInput);
 
           //Boton para enviar mensaje
           const chatSenderButton = document.createElement("button");
           chatSenderButton.style.height = "3em";
-          chatSenderButton.style.width = "20%";
+          chatSenderButton.style.width = "15%";
           chatSenderButton.style.marginLeft = "1em";
           chatSenderButton.style.borderRadius = "5px";
           chatSenderButton.style.border = "1px solid " + primaryColor;
           chatSenderButton.style.backgroundColor = primaryColor;
           chatSenderButton.style.color = "white";
           chatSenderButton.style.fontFamily = "Tahoma, sans-serif";
+          chatSenderButton.style.fontSize = "14px";
+          
 
           chatSenderButton.addEventListener('click', () => {
             sendMessage();
@@ -289,6 +365,16 @@
           chatSenderButton.textContent = "Enviar mensaje";
 
           chatSenderContainer.appendChild(chatSenderButton);
+
+          //Mensaje de error
+          const errorMessage = document.createElement("p");
+          errorMessage.style.color = tertiaryColor;
+          errorMessage.style.fontFamily = "Tahoma, sans-serif";
+          errorMessage.style.marginTop = "0";
+
+          errorMessage.id = "errorMessage";
+
+          chatSender.appendChild(errorMessage);
         }
 
         function buildUserRegisterBox() {
@@ -305,6 +391,7 @@
           userRegisterBox.style.justifyContent = "top";
           userRegisterBox.style.borderRadius = "10px";
           userRegisterBox.style.margin = "20px auto";
+          userRegisterBox.style.alignSelf = "center";
   
           document.body.appendChild(userRegisterBox);
 
@@ -322,9 +409,9 @@
           
           //Titulo del register box
           const userRegisterBoxTitle = document.createElement("h1");
-          userRegisterBoxTitle.textContent = "Ingresa tu nombre";
+          userRegisterBoxTitle.textContent = "Iniciar Sesión";
           userRegisterBoxTitle.style.margin = "10px auto";
-          userRegisterBoxTitle.style.fontSize = "24px";
+          userRegisterBoxTitle.style.fontSize = "18px";
           userRegisterBoxTitle.style.fontWeight = "200";
           userRegisterBoxTitle.style.color = "white";
           
@@ -344,13 +431,13 @@
           //Input para el texto
           const userRegisterInput = document.createElement("input");
           userRegisterInput.style.margin = ".5em";
-          userRegisterInput.style.height = "2.5em";
+          userRegisterInput.style.height = "3em";
           userRegisterInput.style.width = "100%";
           userRegisterInput.style.border = "none";
           userRegisterInput.style.fontFamily = "Tahoma, sans-serif";
           userRegisterInput.style.borderRadius = "5px";
           userRegisterInput.style.border = "1px solid " + inputBorderColor;
-          userRegisterInput.style.fontSize = "18px";
+          userRegisterInput.style.fontSize = "14px";
           userRegisterInput.style.backgroundColor = inputBackgroundColor;
           userRegisterInput.style.color = textColor;
           
@@ -361,12 +448,12 @@
   
           //Boton para guardar el nombre
           const userRegisterButton = document.createElement("button");
-          userRegisterButton.style.height = "2.5em";
+          userRegisterButton.style.height = "3em";
           userRegisterButton.style.width = "100%";
           userRegisterButton.style.margin = ".5em";
           userRegisterButton.style.border = "none";
           userRegisterButton.style.borderRadius = "5px";
-          userRegisterButton.style.fontSize = "18px";
+          userRegisterButton.style.fontSize = "14px";
           userRegisterButton.style.fontFamily = "Tahoma, sans-serif";
           userRegisterButton.style.color = "#FFFFFF";
           userRegisterButton.style.backgroundColor = primaryColor;
@@ -378,6 +465,15 @@
           });
 
           userRegisterBoxContainer.appendChild(userRegisterButton);
+
+          //Mensaje para errores
+          const errorMessage = document.createElement("p");
+          errorMessage.style.color = tertiaryColor;
+          errorMessage.style.fontFamily = "Tahoma, sans-serif";
+
+          errorMessage.id = "errorMessage";
+
+          userRegisterBoxContainer.appendChild(errorMessage);
         }
 
         function registerUser() {
@@ -387,7 +483,7 @@
 
           if (!username) {
               console.log("No hay nombre de usuario ingresado");
-              //document.getElementById("message").innerHTML = "Usuario o clave inválida";
+              document.getElementById("errorMessage").innerHTML = "Usuario vacio, por favor ingrese un nombre";
           } else {
               localStorage.setItem("logged_username", username);
               window.location.reload();
@@ -407,6 +503,12 @@
           const username = localStorage.getItem("logged_username");
           const message = document.getElementById("messageInput").value;
 
+          const errorMessage = document.getElementById("errorMessage");
+
+          if (!message) {
+            errorMessage.innerHTML = "Campo de mensaje vacio, por favor ingrese algo para enviar un mensaje";
+          }
+
           fetch(backend_url, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -416,19 +518,21 @@
                 console.log(response)
                 if (!response.ok) {
                     alert("ERROR: Ocurrio un error al enviar el mensaje con el response"); 
-                    //document.getElementById("message").innerHTML = "Se dio un error al ingresar";
+                    document.getElementById("errorMessage").innerHTML = "Ha ocurrido un error al enviar el mensaje";
                     return;
                 }
 
+                errorMessage.innerHTML = "";
                 return response.json();
             })
             .then(data => {
                 console.log(data);
                 if (data) {
                     alert("Mensaje enviado correctamente! :D");
+                    errorMessage.innerHTML = "";
                   } else {
                     alert("ERROR: Ocurrio un error al enviar el mensaje con el data"); 
-                    //ocument.getElementById("message").innerHTML = "Se dio un error al ingresar";
+                    document.getElementById("errorMessage").innerHTML = "Ha ocurrido un error al enviar el mensaje";
                 }
             });
         }
@@ -461,6 +565,41 @@
           document.body.innerHTML = '';
 
           start();
+        }
+
+        function detectContent(message) {
+          let result = message;
+
+          //Detectar imagenes en el texto
+          const imagenRegex = /(https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp))/gi;
+          result = result.replace(imagenRegex, url =>
+            `<br><img src="${url}" style="max-width: 200px; border-radius: 8px; margin-top: .5em;">`
+          );
+
+          //Para Youtube cuando venga largo o corto
+          const youtubeRegexLargo = /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([\w\-]+)/gi;
+          result = result.replace(youtubeRegexLargo, (match, id) => {
+            const thumb = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+            const url = `https://www.youtube.com/watch?v=${id}`;
+            return `<br><a href="${url}" target="_blank"><img src="${thumb}" style="max-width: 200px; border-radius: 8px; margin-top: .5em;"></a>`;
+          });
+
+          const youtubeRegexCorto = /https?:\/\/youtu\.be\/([\w\-]+)/gi;
+          result = result.replace(youtubeRegexCorto, (match, id) => {
+            const thumb = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+            const url = `https://youtu.be/${id}`;
+            return `<br><a href="${url}" target="_blank"><img src="${thumb}" style="max-width: 200px; border-radius: 8px; margin-top: .5em;"></a>`;
+          });
+
+          return result;
+        }
+
+        function logOut() {
+          console.log("logging out");
+
+          localStorage.removeItem("logged_username");
+
+          window.location.reload();
         }
 
     </script>
