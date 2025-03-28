@@ -3,6 +3,10 @@
   </head>
   <body>
     <script type="application/javascript">
+      const meta = document.createElement('meta');
+      meta.setAttribute('charset', 'UTF-8');
+      document.head.appendChild(meta);
+
         const backend_url = "https://chat.nrywhite.lat/chats";
         let theme = localStorage.getItem("theme");
 
@@ -60,22 +64,25 @@
             buildUserRegisterBox();
           }
           else {
-            getMessages();
+            fetchMessages();
             buildChatContainer();
-            buildMessage("DerNait", "ProbandooooooooooooooooooooooooProbandooooooooooooooooooooooooProbandoooooooooooooooooooooooo");
+            /* buildMessage("DerNait", "ProbandooooooooooooooooooooooooProbandooooooooooooooooooooooooProbandoooooooooooooooooooooooo");
             buildMessage("Kevin", "ProbandooooooooooooooooooooooooProbandooooooooooooooooooooooooProbandoooooooooooooooooooooooo");
             buildMessage("Kevin", "Mirá esta imagen: https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png");
 
             buildMessage("DerNait", "Video buenísimo: https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 
-            buildMessage("Kevin", "También funciona con el link corto: https://youtu.be/dQw4w9WgXcQ");
+            buildMessage("Kevin", "También funciona con el link corto: https://youtu.be/dQw4w9WgXcQ"); */
 
             console.log("Usuario ya registrado!");
           }
   
           buildToggleTheme();
-        }
 
+          setInterval(() => {
+            fetchMessages();
+          }, 30000);
+        }
 
         function buildToggleTheme() {
           //Contenedor de todos los elementos del toggle
@@ -490,13 +497,24 @@
           }
         }
 
-        async function getMessages() {
-            let res = await fetch('https://chat.nrywhite.lat/chats');
-            console.log(res);
+        async function fetchMessages() {
+          try {
+            const response = await fetch(backend_url);
+            if (!response.ok) {
+              throw new Error("Error al obtener mensajes");
+            }
 
-            let datos = await res.json();
+            const messages = await response.json();
+            console.log(messages);
 
-            console.log(datos);
+            messages.forEach(({ id, username, message }) => {
+              buildMessage(username, message);
+            });
+
+          } catch (error) {
+            console.error("Error en fetchMessages:", error);
+            document.getElementById("errorMessage").innerHTML = "No se pudieron obtener los mensajes";
+          }
         }
 
         function sendMessage() {
@@ -528,7 +546,8 @@
             .then(data => {
                 console.log(data);
                 if (data) {
-                    alert("Mensaje enviado correctamente! :D");
+                    fetchMessages();
+                    message = "";
                     errorMessage.innerHTML = "";
                   } else {
                     alert("ERROR: Ocurrio un error al enviar el mensaje con el data"); 
